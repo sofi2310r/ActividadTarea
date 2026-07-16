@@ -410,6 +410,18 @@ header h1 {
     text-decoration: underline;
 }
 
+#task-category {
+    color: #ffffff;
+}
+
+#task-category option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+}
+
+#task-category option:disabled {
+    color: #888888 !important;
+}
 
 .task-section {
     display: flex;
