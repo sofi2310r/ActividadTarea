@@ -434,6 +434,27 @@ header h1 {
     transition: var(--transition);
 }
 
+/* Color por defecto para cualquier categoría nueva que agregue el usuario */
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: var(--primary-color, #4a5568); /* Color neutro de respaldo */
+  color: #ffffff;
+}
+
+intactos */
+.badge-desarrollo { background-color: #007acc; }
+.badge-diseno { background-color: #e28743; }
+.badge-reunion { background-color: #8b5cf6; }
+
+#task-category option {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
 .task-form input:focus,
 .task-form select:focus {
     border-color: var(--neon-color);
