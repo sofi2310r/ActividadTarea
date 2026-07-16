@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusGlow - Digital Garden</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ========================================== -->
+    <!--   PANTALLA DE AUTENTICACIÓN (SPLIT-SCREEN) -->
+    <!-- ========================================== -->
+    <div id="auth-container" class="auth-wrapper">
+        <div class="auth-layout">
+
+            <!-- COLUMNA IZQUIERDA: Hero / Brand Information -->
+            <div class="auth-hero">
+                <div class="auth-logo-brand">
+                    <span class="logo-icon">🌿</span> FocusGlow
+                </div>
+
+                <div class="hero-content">
+                    <span class="hero-badge">PRODUCTIVITY V2.0</span>
+                    <h1 class="hero-title">Cultivate your<br>deep focus.</h1>
+                    <p class="hero-subtitle">Step into your digital garden. A workspace designed to silence the noise
+                        and amplify your creative flow through bio-inspired systems.</p>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-num">94%</span>
+                        <span class="stat-label">FLOW RETENTION</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num">2.4h</span>
+                        <span class="stat-label">DAILY DEEP WORK</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Formulario e interfaz de navegación premium -->
+            <div class="auth-form-column">
+                <header class="auth-header-nav">
+                    <nav class="auth-nav">
+                        <a href="#" class="nav-link">Products</a>
+                        <a href="#" class="nav-link">Methodology</a>
+                        <a href="#" class="nav-link">Pricing</a>
+                        <a href="#" class="nav-btn-alt">Try Free</a>
+                    </nav>
+                </header>
+
+                <div class="auth-card-wrapper">
+                    <div class="auth-card glass-panel">
+                        <h2 id="auth-title">Welcome Back</h2>
+                        <p class="auth-card-subtitle" id="auth-subtitle-text">Enter your credentials to enter flow
+                            state.</p>
+
+                        <form id="auth-form">
+                            <!-- Campo de Usuario -->
+                            <div class="input-group">
+                                <label for="auth-username" id="auth-user-label">WORK EMAIL</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon">@</span>
+                                    <input type="text" id="auth-username" placeholder="name@flow.com" required
+                                        minlength="3" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <!-- Campo de Contraseña -->
+                            <div class="input-group">
+                                <div class="label-row">
+                                    <label for="auth-password" id="auth-pass-label">SECRET KEY</label>
+                                    <a href="#" class="forgot-link">FORGOT?</a>
+                                </div>
+                                <div class="input-wrapper">
+                                    <span class="input-icon">🔑</span>
+                                    <input type="password" id="auth-password" placeholder="••••••••" required
+                                        minlength="4">
+                                </div>
+                            </div>
+
+                            <!-- Opciones adicionales -->
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="keep-flow" checked>
+                                <label for="keep-flow">Keep me in flow on this device</label>
+                            </div>
+
+                            <!-- Botón de Envío -->
+                            <button type="submit" id="auth-submit-btn" class="solid-neon-btn">
+                                SIGN IN <span class="arrow">&gt;</span>
+                            </button>
+                        </form>
+
+                        <!-- Toggle de cambio entre Login e Sign Up -->
+                        <p class="auth-toggle-text">
+                            <span id="auth-toggle-text-span">New to the Garden?</span>
+                            <a href="#" id="toggle-auth-mode">Create Account</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TOAST DE ADVERTENCIA (CA 3.5) -->
+    <div id="warning-toast" class="warning-toast">¡Debes seleccionar una tarea activa primero!</div>
+
+    <!-- CABECERA -->
+    <header id="app-header">
+        <h1>FocusGlow 🌿</h1>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <span id="user-display" style="font-size: 0.9rem; font-weight: 600; color: #fff; display: none;">👤 Usuario:
+            </span>
+            <button id="logout-btn" class="neon-btn" onclick="logout()"
+                style="font-size: 0.75rem; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); display: none;">Cerrar
+                Sesión</button>
+            <button class="neon-btn" onclick="resetApp()"
+                style="font-size: 0.75rem; background: rgba(255,0,85,0.1); border-color: var(--neon-danger); box-shadow: 0 0 5px rgba(255,0,85,0.2);">Restablecer
+                App</button>
+        </div>
+    </header>
+
+    <!-- REJILLA DE LA APLICACIÓN (CA 1.5) -->
+    <main class="app-grid" id="main-grid" style="display: none;">
+
+        <!-- COLUMNA 1: GESTOR DE TAREAS (US1 & US2) -->
+        <section class="task-section glass-panel">
+            <h2>Tareas Diario</h2>
+            <form class="task-form" id="task-form" onsubmit="addTask(event)">
+                <input type="text" id="task-title" placeholder="¿En qué vas a enfocarte hoy?" required minlength="3">
+                <select id="task-category" required>
+                    <option value="" disabled selected>Selecciona categoría...</option>
+                    <option value="desarrollo">Desarrollo</option>
+                    <option value="diseno">Diseño</option>
+                    <option value="reunion">Reunión</option>
+                </select>
+                <input type="number" id="task-estimated" placeholder="Pomodoros estimados (1-6)" min="1" max="6"
+                    required>
+                <button type="submit" class="neon-btn" id="save-task-btn" style="width: 100%;">Agregar</button>
+            </form>
+
+            <ul class="task-list" id="pending-tasks"></ul>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+            <h3>Completadas</h3>
+            <ul class="task-list" id="completed-tasks"></ul>
+        </section>
+
+        <!-- COLUMNA 2: TEMPORIZADOR POMODORO (US3) -->
+        <section class="focus-section glass-panel">
+            <div id="active-task-display" class="active-task-display">Selecciona una tarea para iniciar</div>
+
+            <div class="timer-container">
+                <svg class="timer-svg" viewBox="0 0 200 200">
+                    <circle class="bg-circle" cx="100" cy="100" r="90"></circle>
+                    <circle class="progress-circle" id="progress-ring" cx="100" cy="100" r="90"></circle>
+                </svg>
+                <div class="timer-text" id="timer-display">25:00</div>
+            </div>
+
+            <div class="timer-controls">
+                <button id="start-btn" class="neon-btn" onclick="toggleTimer()">Iniciar</button>
+                <button id="pause-btn" class="neon-btn" onclick="pauseTimer()" style="display: none;">Pausar</button>
+                <button id="abandon-btn" class="neon-btn" onclick="abandonSession()"
+                    style="display: none; background: rgba(255,0,85,0.1); border-color: var(--neon-danger);">Abandonar</button>
+                <button id="focus-toggle-btn" class="neon-btn" onclick="toggleFocusMode()">Modo Enfoque</button>
+            </div>
+
+            <button id="exit-focus-btn" class="neon-btn" onclick="exitFocusMode()">Salir de Enfoque</button>
+        </section>
+
+        <!-- COLUMNA 3: DIGITAL GARDEN (US4) -->
+        <section class="garden-section glass-panel">
+            <h2>Mi Jardín Digital</h2>
+            <div class="plant-box">
+                <svg class="plant-svg state-1" id="plant-svg" viewBox="0 0 100 100">
+                    <!-- Estado 1: Semilla/Brote -->
+                    <g class="state seed">
+                        <circle cx="50" cy="80" r="8" />
+                        <path d="M50,72 Q52,65 55,60 Q50,65 50,72 Z" />
+                    </g>
+                    <!-- Estado 2: Brote Joven -->
+                    <g class="state brote">
+                        <rect x="48" y="55" width="4" height="25" rx="2" />
+                        <path d="M50,60 Q40,50 48,52 Q45,58 50,60 Z" />
+                        <path d="M50,65 Q60,55 52,57 Q55,63 50,65 Z" />
+                    </g>
+                    <!-- Estado 3: Planta Madura -->
+                    <g class="state joven">
+                        <rect x="47" y="40" width="6" height="40" rx="3" />
+                        <path d="M50,50 Q30,35 47,42 Z" />
+                        <path d="M50,60 Q70,45 53,52 Z" />
+                    </g>
+                    <!-- Estado 4: Florecida -->
+                    <g class="state florecida">
+                        <rect x="47" y="35" width="6" height="45" rx="3" />
+                        <circle cx="50" cy="25" r="10" />
+                        <circle cx="38" cy="25" r="7" />
+                        <circle cx="62" cy="25" r="7" />
+                        <circle cx="50" cy="13" r="7" />
+                        <circle cx="50" cy="37" r="7" />
+                    </g>
+                </svg>
+            </div>
+
+            <div style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px;">
+                    <span>Nutrientes</span>
+                    <span id="nutrient-percent">0%</span>
+                </div>
+                <div class="nutrient-container">
+                    <div class="nutrient-bar" id="nutrient-bar"></div>
+                </div>
+            </div>
+
+            <button id="harvest-btn" class="neon-btn" onclick="harvestPlant()"
+                style="display: none; width: 100%; border-color: var(--neon-success); margin-top: 15px;">¡Cosechar!</button>
+
+            <div class="audio-control">
+                <label for="sound-toggle" style="cursor: pointer;">🔊 Alertas de Audio:</label>
+                <input type="checkbox" id="sound-toggle" checked onchange="toggleSound(event)">
+            </div>
+        </section>
+
+        <!-- COLUMNA EXTRA: ANALYTICS -->
+        <section class="analytics-section glass-panel">
+            <h2>Reporte de Productividad Semanal</h2>
+            <div class="chart-container" id="analytics-chart"></div>
+        </section>
+
+    </main>
+
+    <footer id="app-footer">
+        <p>© 2026 FocusGlow — Diseñado por Daniel y Evelin</p>
+    </footer>
+
+    <script src="js/app.js" defer></script>
+</body>
+
+</html>

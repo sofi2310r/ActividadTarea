@@ -1,0 +1,892 @@
+/* ==========================================================================
+   VARIABLES, CONFIGURACIÓN Y EFECTOS BASE (CA 1.1, CA 1.2, CA 1.5, CA 1.6)
+   ========================================================================== */
+:root {
+    --bg-color: #030811;
+    /* Ajustado al fondo ultra oscuro premium de la imagen */
+    --panel-bg: rgba(13, 22, 37, 0.35);
+    /* Glassmorphism minimalista */
+    --border-color: rgba(0, 242, 254, 0.2);
+    --neon-color: #00f2fe;
+    --neon-success: #39ff14;
+    --neon-danger: #ff0055;
+    --neon-glow: 0 0 10px rgba(0, 242, 254, 0.4), inset 0 0 5px rgba(0, 242, 254, 0.2);
+    --text-color: #e2f1f8;
+    --text-muted: #8a9fc4;
+    --font-family: 'Inter', sans-serif;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: radial-gradient(circle at 50% 50%, #0d1e30 0%, var(--bg-color) 100%);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-color);
+}
+
+/* Estilo Glassmorphism General (CA 1.1) */
+.glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--neon-glow);
+    padding: 20px;
+    transition: var(--transition);
+}
+
+/* Brillos Neon para Interactivos (CA 1.2) */
+.neon-btn {
+    background: rgba(0, 242, 254, 0.1);
+    border: 1px solid var(--neon-color);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
+    transition: var(--transition);
+}
+
+.neon-btn:hover,
+.neon-btn:focus {
+    background: var(--neon-color);
+    color: #000;
+    box-shadow: 0 0 15px var(--neon-color);
+    outline: none;
+}
+
+.neon-btn:active {
+    transform: scale(0.95);
+}
+
+/* Diseño Grid Adaptable (CA 1.5) */
+.app-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr 300px;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    flex-grow: 1;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* ==========================================================================
+   NUEVO: MÓDULO DE AUTENTICACIÓN (DISEÑO PREMIUM SPLIT-SCREEN)
+   ========================================================================== */
+.auth-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #030811;
+    /* Fondo oscuro exacto */
+    z-index: 2000;
+    overflow-y: auto;
+}
+
+.auth-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* --- Columna Izquierda: Brand & Hero --- */
+.auth-hero {
+    width: 50%;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: radial-gradient(circle at 10% 30%, #081526 0%, #030811 100%);
+    border-right: 1px solid rgba(0, 242, 254, 0.05);
+}
+
+.auth-logo-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hero-content {
+    max-width: 500px;
+    margin: auto 0;
+}
+
+.hero-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--neon-color);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #ffffff;
+    margin-bottom: 25px;
+    letter-spacing: -1px;
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.hero-stats {
+    display: flex;
+    gap: 60px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-num {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+}
+
+/* --- Columna Derecha: Formulario & Nav --- */
+.auth-form-column {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 60px;
+}
+
+.auth-header-nav {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.auth-nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.auth-nav .nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.auth-nav .nav-link:hover {
+    color: #fff;
+}
+
+.auth-nav .nav-btn-alt {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.auth-nav .nav-btn-alt:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #fff;
+}
+
+.auth-card-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--panel-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    padding: 40px;
+}
+
+.auth-card h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-align: left;
+    margin-bottom: 8px;
+    color: #fff;
+    text-shadow: none;
+}
+
+.auth-card-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+
+/* Campos de entrada e Iconos */
+.input-group {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.forgot-link {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--neon-color);
+    text-decoration: none;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+}
+
+.input-icon {
+    position: absolute;
+    left: 0;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.9rem;
+}
+
+.input-wrapper input {
+    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 10px 10px 10px 25px !important;
+    color: #fff;
+    font-size: 0.95rem;
+    box-shadow: none !important;
+    transition: var(--transition);
+}
+
+.input-wrapper:focus-within {
+    border-bottom-color: var(--neon-color);
+}
+
+/* Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    accent-color: var(--neon-color);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* Botón Sólido Cyan */
+.solid-neon-btn {
+    background: #5bf0ff;
+    color: #030811;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(91, 240, 255, 0.3);
+    transition: var(--transition);
+}
+
+.solid-neon-btn:hover {
+    background: #fff;
+    box-shadow: 0 4px 25px rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+.solid-neon-btn:active {
+    transform: translateY(1px);
+}
+
+.solid-neon-btn .arrow {
+    font-size: 1rem;
+}
+
+.auth-toggle-text {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.auth-toggle-text a {
+    color: var(--neon-color);
+    text-decoration: none;
+    font-weight: 700;
+    margin-left: 5px;
+    transition: var(--transition);
+}
+
+.auth-toggle-text a:hover {
+    text-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   MODULO DE TAREAS (US1 & US2 - CA 2.1 a 2.6)
+   ========================================================================== */
+.task-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-form input,
+.task-form select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    color: #fff;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.task-form input:focus,
+.task-form select:focus {
+    border-color: var(--neon-color);
+    box-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+    outline: none;
+}
+
+.task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.task-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+    background: var(--neon-color);
+    border-radius: 3px;
+}
+
+.task-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--neon-color);
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.task-item.completed {
+    opacity: 0.5;
+    text-decoration: line-through;
+    border-left-color: var(--neon-success);
+    animation: completeStrike 0.4s ease forwards;
+}
+
+@keyframes completeStrike {
+    from {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.task-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Badges de categorías (CA 2.3) */
+.badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-desarrollo {
+    background: rgba(0, 150, 255, 0.2);
+    color: #00f2fe;
+    border: 1px solid #00f2fe;
+}
+
+.badge-diseno {
+    background: rgba(138, 43, 226, 0.2);
+    color: #da70d6;
+    border: 1px solid #da70d6;
+}
+
+.badge-reunion {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    border: 1px solid #ffd700;
+}
+
+.task-tomatoes {
+    display: flex;
+    gap: 4px;
+    color: #ff5252;
+    font-size: 0.9rem;
+}
+
+.task-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.task-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.task-btn:hover {
+    background: var(--neon-color);
+    color: #000;
+    border-color: var(--neon-color);
+}
+
+.task-btn.complete-btn:hover {
+    background: var(--neon-success);
+    border-color: var(--neon-success);
+    color: #000;
+}
+
+.task-btn.delete-btn:hover {
+    background: var(--neon-danger);
+    border-color: var(--neon-danger);
+    color: #fff;
+}
+
+/* ==========================================================================
+   MODULO ENFOQUE Y TEMPORIZADOR (US3 & CA 1.3, CA 3.1 a 3.6)
+   ========================================================================== */
+.focus-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.active-task-display {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 0 8px var(--neon-color);
+    min-height: 28px;
+}
+
+.timer-container {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    margin-bottom: 30px;
+}
+
+/* Timer Circular SVG (CA 1.3) */
+.timer-svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.timer-svg circle {
+    fill: none;
+    stroke-width: 10;
+}
+
+.timer-svg .bg-circle {
+    stroke: rgba(255, 255, 255, 0.05);
+}
+
+.timer-svg .progress-circle {
+    stroke: var(--neon-color);
+    stroke-linecap: round;
+    stroke-dasharray: 565.48;
+    stroke-dashoffset: 565.48;
+    transition: stroke-dashoffset 1s linear, stroke var(--transition);
+    filter: drop-shadow(0 0 8px var(--neon-color));
+}
+
+.timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow: 0 0 15px var(--neon-color);
+}
+
+.timer-controls {
+    display: flex;
+    gap: 15px;
+}
+
+/* Transición Modo Enfoque Activo (CA 3.3, CA 3.4) */
+body.focus-mode-active .app-grid {
+    grid-template-columns: 1fr;
+}
+
+body.focus-mode-active .task-section,
+body.focus-mode-active .garden-section,
+body.focus-mode-active header,
+body.focus-mode-active footer {
+    display: none !important;
+}
+
+body.focus-mode-active .focus-section {
+    max-width: 600px;
+    margin: auto;
+    padding: 60px;
+}
+
+body.focus-mode-active .timer-container {
+    width: 320px;
+    height: 320px;
+}
+
+body.focus-mode-active .timer-text {
+    font-size: 4rem;
+}
+
+#exit-focus-btn {
+    display: none;
+    margin-top: 20px;
+}
+
+body.focus-mode-active #exit-focus-btn {
+    display: inline-block;
+}
+
+/* Warning visual temporal (CA 3.5) */
+.warning-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--neon-danger);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px var(--neon-danger);
+    font-weight: bold;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   MODULO VIRTUAL GARDEN & AUDIO (US4 & CA 1.4, CA 4.1 a 4.6)
+   ========================================================================== */
+.garden-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    text-align: center;
+}
+
+.plant-box {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+/* Planta Virtual SVG (CA 1.4) */
+.plant-svg {
+    width: 120px;
+    height: 120px;
+    transition: var(--transition);
+}
+
+/* Estados de la planta controlados por clases de CSS (CA 1.4) */
+.plant-svg .state {
+    display: none;
+}
+
+.plant-svg.state-1 .seed {
+    display: block;
+    fill: #8b5a2b;
+}
+
+.plant-svg.state-2 .brote {
+    display: block;
+    fill: #4caf50;
+}
+
+.plant-svg.state-3 .joven {
+    display: block;
+    fill: #2e7d32;
+}
+
+.plant-svg.state-4 .florecida {
+    display: block;
+    fill: #e91e63;
+}
+
+/* Efecto marchito mediante Filtros CSS (CA 4.2, CA 5.6) */
+.plant-svg.withered {
+    filter: grayscale(0.8) sepia(0.2);
+}
+
+/* Celebración de neón (CA 4.6) */
+@keyframes neon-flash {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 5px #ff0055);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px #00f2fe) drop-shadow(0 0 30px #e91e63);
+    }
+}
+
+.celebrate {
+    animation: neon-flash 1s infinite alternate;
+}
+
+.nutrient-container {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.nutrient-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--neon-color), var(--neon-success));
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px var(--neon-success);
+}
+
+.audio-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   MODULO ANALÍTICAS (US4 & CA 5.4, CA 5.5)
+   ========================================================================== */
+.analytics-section {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 150px;
+    padding-top: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.chart-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 10%;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.chart-bar {
+    width: 70%;
+    background: linear-gradient(180deg, var(--neon-color) 0%, rgba(0, 242, 254, 0.1) 100%);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
+    height: 0%;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-day {
+    font-size: 0.75rem;
+    margin-top: 8px;
+    color: var(--text-muted);
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* RESPONSIVE (CA 1.5) */
+@media (max-width: 1024px) {
+    .app-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .analytics-section {
+        grid-column: auto;
+    }
+
+    .auth-hero {
+        padding: 40px;
+    }
+
+    .auth-form-column {
+        padding: 40px;
+    }
+}
+
+@media (max-width: 900px) {
+    .auth-hero {
+        display: none;
+        /* Oculta la columna de marca en móviles para mantener la tarjeta cómoda */
+    }
+
+    .auth-form-column {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-grid {
+        grid-template-columns: 1fr;
+    }
+}
