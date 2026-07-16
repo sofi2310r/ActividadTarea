@@ -11,13 +11,10 @@
 
 <body>
 
-    <!-- ========================================== -->
-    <!--   PANTALLA DE AUTENTICACIÓN (SPLIT-SCREEN) -->
-    <!-- ========================================== -->
     <div id="auth-container" class="auth-wrapper">
         <div class="auth-layout">
 
-            <!-- COLUMNA IZQUIERDA: Hero / Brand Information -->
+       
             <div class="auth-hero">
                 <div class="auth-logo-brand">
                     <span class="logo-icon">🌿</span> FocusGlow
@@ -42,7 +39,6 @@
                 </div>
             </div>
 
-            <!-- COLUMNA DERECHA: Formulario e interfaz de navegación premium -->
             <div class="auth-form-column">
                 <header class="auth-header-nav">
                     <nav class="auth-nav">
@@ -60,7 +56,7 @@
                             state.</p>
 
                         <form id="auth-form">
-                            <!-- Campo de Usuario -->
+                          
                             <div class="input-group">
                                 <label for="auth-username" id="auth-user-label">WORK EMAIL</label>
                                 <div class="input-wrapper">
@@ -70,7 +66,7 @@
                                 </div>
                             </div>
 
-                            <!-- Campo de Contraseña -->
+                        
                             <div class="input-group">
                                 <div class="label-row">
                                     <label for="auth-password" id="auth-pass-label">SECRET KEY</label>
@@ -83,19 +79,19 @@
                                 </div>
                             </div>
 
-                            <!-- Opciones adicionales -->
+                           
                             <div class="checkbox-group">
                                 <input type="checkbox" id="keep-flow" checked>
                                 <label for="keep-flow">Keep me in flow on this device</label>
                             </div>
 
-                            <!-- Botón de Envío -->
+                           
                             <button type="submit" id="auth-submit-btn" class="solid-neon-btn">
                                 SIGN IN <span class="arrow">&gt;</span>
                             </button>
                         </form>
 
-                        <!-- Toggle de cambio entre Login e Sign Up -->
+                        
                         <p class="auth-toggle-text">
                             <span id="auth-toggle-text-span">New to the Garden?</span>
                             <a href="#" id="toggle-auth-mode">Create Account</a>
@@ -107,10 +103,9 @@
         </div>
     </div>
 
-    <!-- TOAST DE ADVERTENCIA (CA 3.5) -->
+  
     <div id="warning-toast" class="warning-toast">¡Debes seleccionar una tarea activa primero!</div>
 
-    <!-- CABECERA -->
     <header id="app-header">
         <h1>FocusGlow 🌿</h1>
         <div style="display: flex; gap: 15px; align-items: center;">
@@ -125,10 +120,9 @@
         </div>
     </header>
 
-    <!-- REJILLA DE LA APLICACIÓN (CA 1.5) -->
     <main class="app-grid" id="main-grid" style="display: none;">
 
-        <!-- COLUMNA 1: GESTOR DE TAREAS (US1 & US2) -->
+    
         <section class="task-section glass-panel">
             <h2>Tareas Diario</h2>
             <form class="task-form" id="task-form" onsubmit="addTask(event)">
@@ -150,7 +144,7 @@
             <ul class="task-list" id="completed-tasks"></ul>
         </section>
 
-        <!-- COLUMNA 2: TEMPORIZADOR POMODORO (US3) -->
+     
         <section class="focus-section glass-panel">
             <div id="active-task-display" class="active-task-display">Selecciona una tarea para iniciar</div>
 
@@ -173,29 +167,29 @@
             <button id="exit-focus-btn" class="neon-btn" onclick="exitFocusMode()">Salir de Enfoque</button>
         </section>
 
-        <!-- COLUMNA 3: DIGITAL GARDEN (US4) -->
+    
         <section class="garden-section glass-panel">
             <h2>Mi Jardín Digital</h2>
             <div class="plant-box">
                 <svg class="plant-svg state-1" id="plant-svg" viewBox="0 0 100 100">
-                    <!-- Estado 1: Semilla/Brote -->
+                 
                     <g class="state seed">
                         <circle cx="50" cy="80" r="8" />
                         <path d="M50,72 Q52,65 55,60 Q50,65 50,72 Z" />
                     </g>
-                    <!-- Estado 2: Brote Joven -->
+                   
                     <g class="state brote">
                         <rect x="48" y="55" width="4" height="25" rx="2" />
                         <path d="M50,60 Q40,50 48,52 Q45,58 50,60 Z" />
                         <path d="M50,65 Q60,55 52,57 Q55,63 50,65 Z" />
                     </g>
-                    <!-- Estado 3: Planta Madura -->
+                    
                     <g class="state joven">
                         <rect x="47" y="40" width="6" height="40" rx="3" />
                         <path d="M50,50 Q30,35 47,42 Z" />
                         <path d="M50,60 Q70,45 53,52 Z" />
                     </g>
-                    <!-- Estado 4: Florecida -->
+                    
                     <g class="state florecida">
                         <rect x="47" y="35" width="6" height="45" rx="3" />
                         <circle cx="50" cy="25" r="10" />
@@ -226,7 +220,6 @@
             </div>
         </section>
 
-        <!-- COLUMNA EXTRA: ANALYTICS -->
         <section class="analytics-section glass-panel">
             <h2>Reporte de Productividad Semanal</h2>
             <div class="chart-container" id="analytics-chart"></div>

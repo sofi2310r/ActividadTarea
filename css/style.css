@@ -1,6 +1,4 @@
-/* ==========================================================================
-   VARIABLES, CONFIGURACIÓN Y EFECTOS BASE (CA 1.1, CA 1.2, CA 1.5, CA 1.6)
-   ========================================================================== */
+
 :root {
     --bg-color: #030811;
     /* Ajustado al fondo ultra oscuro premium de la imagen */
@@ -51,7 +49,6 @@ header h1 {
     text-shadow: 0 0 10px var(--neon-color);
 }
 
-/* Estilo Glassmorphism General (CA 1.1) */
 .glass-panel {
     background: var(--panel-bg);
     backdrop-filter: blur(10px);
@@ -63,7 +60,7 @@ header h1 {
     transition: var(--transition);
 }
 
-/* Brillos Neon para Interactivos (CA 1.2) */
+
 .neon-btn {
     background: rgba(0, 242, 254, 0.1);
     border: 1px solid var(--neon-color);
@@ -90,7 +87,7 @@ header h1 {
     transform: scale(0.95);
 }
 
-/* Diseño Grid Adaptable (CA 1.5) */
+
 .app-grid {
     display: grid;
     grid-template-columns: 320px 1fr 300px;
@@ -102,9 +99,7 @@ header h1 {
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* ==========================================================================
-   NUEVO: MÓDULO DE AUTENTICACIÓN (DISEÑO PREMIUM SPLIT-SCREEN)
-   ========================================================================== */
+
 .auth-wrapper {
     position: fixed;
     top: 0;
@@ -123,7 +118,7 @@ header h1 {
     min-height: 100vh;
 }
 
-/* --- Columna Izquierda: Brand & Hero --- */
+
 .auth-hero {
     width: 50%;
     padding: 60px 80px;
@@ -200,7 +195,7 @@ header h1 {
     color: var(--text-muted);
 }
 
-/* --- Columna Derecha: Formulario & Nav --- */
+
 .auth-form-column {
     width: 50%;
     display: flex;
@@ -280,7 +275,7 @@ header h1 {
     margin-bottom: 30px;
 }
 
-/* Campos de entrada e Iconos */
+
 .input-group {
     margin-bottom: 25px;
     display: flex;
@@ -340,7 +335,7 @@ header h1 {
     border-bottom-color: var(--neon-color);
 }
 
-/* Checkbox */
+
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -361,7 +356,7 @@ header h1 {
     cursor: pointer;
 }
 
-/* Botón Sólido Cyan */
+
 .solid-neon-btn {
     background: #5bf0ff;
     color: #030811;
@@ -415,9 +410,7 @@ header h1 {
     text-decoration: underline;
 }
 
-/* ==========================================================================
-   MODULO DE TAREAS (US1 & US2 - CA 2.1 a 2.6)
-   ========================================================================== */
+
 .task-section {
     display: flex;
     flex-direction: column;
@@ -511,7 +504,7 @@ header h1 {
     font-size: 0.95rem;
 }
 
-/* Badges de categorías (CA 2.3) */
+
 .badge {
     font-size: 0.75rem;
     padding: 2px 8px;
@@ -580,9 +573,7 @@ header h1 {
     color: #fff;
 }
 
-/* ==========================================================================
-   MODULO ENFOQUE Y TEMPORIZADOR (US3 & CA 1.3, CA 3.1 a 3.6)
-   ========================================================================== */
+
 .focus-section {
     display: flex;
     flex-direction: column;
@@ -608,7 +599,7 @@ header h1 {
     margin-bottom: 30px;
 }
 
-/* Timer Circular SVG (CA 1.3) */
+
 .timer-svg {
     transform: rotate(-90deg);
     width: 100%;
@@ -650,7 +641,6 @@ header h1 {
     gap: 15px;
 }
 
-/* Transición Modo Enfoque Activo (CA 3.3, CA 3.4) */
 body.focus-mode-active .app-grid {
     grid-template-columns: 1fr;
 }
@@ -686,7 +676,7 @@ body.focus-mode-active #exit-focus-btn {
     display: inline-block;
 }
 
-/* Warning visual temporal (CA 3.5) */
+
 .warning-toast {
     position: fixed;
     bottom: 30px;
@@ -704,9 +694,7 @@ body.focus-mode-active #exit-focus-btn {
     pointer-events: none;
 }
 
-/* ==========================================================================
-   MODULO VIRTUAL GARDEN & AUDIO (US4 & CA 1.4, CA 4.1 a 4.6)
-   ========================================================================== */
+
 .garden-section {
     display: flex;
     flex-direction: column;
@@ -725,14 +713,13 @@ body.focus-mode-active #exit-focus-btn {
     margin-bottom: 10px;
 }
 
-/* Planta Virtual SVG (CA 1.4) */
 .plant-svg {
     width: 120px;
     height: 120px;
     transition: var(--transition);
 }
 
-/* Estados de la planta controlados por clases de CSS (CA 1.4) */
+
 .plant-svg .state {
     display: none;
 }
@@ -757,12 +744,12 @@ body.focus-mode-active #exit-focus-btn {
     fill: #e91e63;
 }
 
-/* Efecto marchito mediante Filtros CSS (CA 4.2, CA 5.6) */
+
 .plant-svg.withered {
     filter: grayscale(0.8) sepia(0.2);
 }
 
-/* Celebración de neón (CA 4.6) */
+
 @keyframes neon-flash {
 
     0%,
@@ -804,9 +791,7 @@ body.focus-mode-active #exit-focus-btn {
     font-size: 0.85rem;
 }
 
-/* ==========================================================================
-   MODULO ANALÍTICAS (US4 & CA 5.4, CA 5.5)
-   ========================================================================== */
+
 .analytics-section {
     grid-column: 1 / -1;
     margin-top: 20px;
@@ -855,7 +840,6 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* RESPONSIVE (CA 1.5) */
 @media (max-width: 1024px) {
     .app-grid {
         grid-template-columns: 1fr 1fr;
@@ -877,7 +861,6 @@ footer {
 @media (max-width: 900px) {
     .auth-hero {
         display: none;
-        /* Oculta la columna de marca en móviles para mantener la tarjeta cómoda */
     }
 
     .auth-form-column {

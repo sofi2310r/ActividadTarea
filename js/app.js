@@ -1,6 +1,3 @@
-// ==========================================================================
-// VARIABLES DE ESTADO GLOBALES
-// ==========================================================================
 let currentUser = null; // Almacena el nombre del usuario logueado
 
 let tasks = [];
@@ -11,21 +8,19 @@ const totalDuration = 25 * 60;
 let isPaused = false;
 let soundEnabled = true;
 
-// Estado del Jardín
+
 let plantState = 1; // 1 a 4
 let nutrients = 0; // 0 a 100
 let isWithered = false;
 
-// Historial de analíticas
+s
 let weeklyHistory = {
   "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie": 0, "Sáb": 0, "Dom": 0
 };
 
-// ==========================================================================
-// INICIALIZACIÓN AL CARGAR LA PÁGINA
-// ==========================================================================
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Comprobar si hay una sesión activa de usuario
+
   currentUser = localStorage.getItem('focusglow_logged_in_user');
 
   if (currentUser) {
@@ -37,16 +32,13 @@ window.addEventListener('DOMContentLoaded', () => {
   setupValidation();
   setupAuthEvents();
 
-  // Escucha el evento submit del formulario para agregar tareas de forma correcta
+
   const taskForm = document.getElementById('task-form');
   if (taskForm) {
     taskForm.addEventListener('submit', addTask);
   }
 });
 
-// ==========================================================================
-// MÓDULO DE AUTENTICACIÓN (LOGIN & REGISTRO MULTI-USUARIO)
-// ==========================================================================
 let isRegisterMode = false;
 
 function setupAuthEvents() {
@@ -96,26 +88,24 @@ function handleAuthSubmit(e) {
     return;
   }
 
-  // Obtener lista global de usuarios y sus credenciales de localStorage
+ 
   let users = JSON.parse(localStorage.getItem('focusglow_users')) || {};
 
   if (isRegisterMode) {
-    // REGISTRO
+    
     if (users[username]) {
       alert("El nombre de usuario ya está tomado. Elige otro.");
       return;
     }
 
-    // Registrar y guardar credenciales
     users[username] = { password: password };
     localStorage.setItem('focusglow_users', JSON.stringify(users));
 
     alert("¡Cuenta creada con éxito! Iniciando sesión automáticamente...");
 
-    // Autologin e inicio de sesión inmediato
+  
     loginUser(username);
   } else {
-    // INICIAR SESIÓN
     if (users[username] && users[username].password === password) {
       loginUser(username);
     } else {
@@ -128,7 +118,7 @@ function loginUser(username) {
   currentUser = username;
   localStorage.setItem('focusglow_logged_in_user', currentUser);
   
-  // Limpiar campos del formulario
+
   document.getElementById('auth-username').value = '';
   document.getElementById('auth-password').value = '';
 
@@ -136,7 +126,7 @@ function loginUser(username) {
 }
 
 function logout() {
-  // Asegurar que el temporizador se detenga antes de salir
+
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
@@ -148,7 +138,7 @@ function logout() {
   showAuth();
 }
 
-// Control de vistas (Auth vs App)
+
 function showApp() {
   document.getElementById('auth-container').style.display = 'none';
   document.getElementById('main-grid').style.display = 'grid';
@@ -158,7 +148,6 @@ function showApp() {
   if (userDisplay) userDisplay.innerText = `👤 ${currentUser}`;
   if (logoutBtn) logoutBtn.style.display = 'inline-block';
 
-  // Cargar todos los datos correspondientes únicamente al usuario activo
   loadFromLocalStorage();
   renderTasks();
   updatePlantUI();
@@ -177,15 +166,12 @@ function showAuth() {
   resetTimerUI();
 }
 
-// ==========================================================================
-// SONIDOS DE RECOMPENSA SINTETIZADOS NATIVAMENTE
-// ==========================================================================
+
 function playChime() {
   if (!soundEnabled) return;
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Primera nota (Do)
     const osc1 = audioCtx.createOscillator();
     const gain1 = audioCtx.createGain();
     osc1.type = 'sine';
@@ -197,7 +183,7 @@ function playChime() {
     osc1.start();
     osc1.stop(audioCtx.currentTime + 0.5);
 
-    // Segunda nota (Mi) con delay
+
     setTimeout(() => {
       const osc2 = audioCtx.createOscillator();
       const gain2 = audioCtx.createGain();
@@ -211,7 +197,7 @@ function playChime() {
       osc2.stop(audioCtx.currentTime + 0.5);
     }, 200);
 
-    // Tercera nota (Sol) con delay
+
     setTimeout(() => {
       const osc3 = audioCtx.createOscillator();
       const gain3 = audioCtx.createGain();
@@ -230,7 +216,7 @@ function playChime() {
   }
 }
 
-// --- MANEJO DE CONFIGURACIÓN DE AUDIO ---
+
 function toggleSound(e) {
   soundEnabled = e.target.checked;
   if (currentUser) {
@@ -238,9 +224,7 @@ function toggleSound(e) {
   }
 }
 
-// ==========================================================================
-// FORMULARIO & VALIDACIONES
-// ==========================================================================
+
 function setupValidation() {
   const titleInput = document.getElementById('task-title');
   const categoryInput = document.getElementById('task-category');
@@ -263,7 +247,7 @@ function setupValidation() {
   validate();
 }
 
-// --- AGREGAR TAREAS ---
+
 function addTask(e) {
   e.preventDefault();
   const title = document.getElementById('task-title').value;
@@ -283,12 +267,12 @@ function addTask(e) {
   saveToLocalStorage();
   renderTasks();
   
-  // Reset form
+ 
   document.getElementById('task-form').reset();
   setupValidation();
 }
 
-// --- RENDERIZADO DE TAREAS ---
+
 function renderTasks() {
   const pendingList = document.getElementById('pending-tasks');
   const completedList = document.getElementById('completed-tasks');
@@ -330,7 +314,6 @@ function renderTasks() {
   });
 }
 
-// --- EVENTOS DE TAREA ---
 function selectTask(id) {
   const task = tasks.find(t => t.id === id);
   if (task) {
@@ -364,9 +347,6 @@ function deleteTask(id) {
   renderTasks();
 }
 
-// ==========================================================================
-// GESTIÓN DEL TEMPORIZADOR
-// ==========================================================================
 function toggleTimer() {
   if (!activeTaskId) {
     showWarning();
@@ -495,9 +475,7 @@ function exitFocusMode() {
   document.body.classList.remove('focus-mode-active');
 }
 
-// ==========================================================================
-// MODULO VIRTUAL GARDEN & AUDIO
-// ==========================================================================
+
 function updatePlantUI() {
   const plantSvg = document.getElementById('plant-svg');
   const harvestBtn = document.getElementById('harvest-btn');
@@ -543,9 +521,7 @@ function logProductivityMinutes(minutes) {
   weeklyHistory[todayName] = (weeklyHistory[todayName] || 0) + minutes;
 }
 
-// ==========================================================================
-// ANALÍTICAS
-// ==========================================================================
+
 function renderAnalytics() {
   const container = document.getElementById('analytics-chart');
   if (!container) return;
@@ -567,9 +543,7 @@ function renderAnalytics() {
   });
 }
 
-// ==========================================================================
-// PERSISTENCIA DE DATOS EXCLUSIVA POR USUARIO
-// ==========================================================================
+
 function saveToLocalStorage() {
   if (!currentUser) return;
   
@@ -594,7 +568,7 @@ function loadFromLocalStorage() {
     if (localTasks) {
       tasks = JSON.parse(localTasks);
     } else {
-      // Valores por defecto para nuevos usuarios
+
       tasks = [
         { id: 1, title: 'Maquetar Interfaz CSS', category: 'diseno', estimated: 3, completedPomodoros: 1, status: 'pending' },
         { id: 2, title: 'Programar Core de JavaScript', category: 'desarrollo', estimated: 4, completedPomodoros: 2, status: 'pending' }
@@ -628,7 +602,7 @@ function resetApp() {
   if (!currentUser) return;
   
   if (confirm("¿Estás seguro de que deseas restablecer por completo tus datos? Perderás todo tu progreso personal.")) {
-    // Solo borramos las claves del usuario actual para no interferir con otros perfiles
+    
     localStorage.removeItem(`focusglow_${currentUser}_tasks`);
     localStorage.removeItem(`focusglow_${currentUser}_plantState`);
     localStorage.removeItem(`focusglow_${currentUser}_nutrients`);
