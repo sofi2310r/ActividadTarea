@@ -13,7 +13,6 @@ let weeklyHistory = {
   "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie": 0, "Sáb": 0, "Dom": 0
 };
 let isRegisterMode = false;
-let categories = ["desarrollo", "diseno", "reunion"];
 
 window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -230,43 +229,11 @@ async function showApp() {
   const logoutBtn = document.getElementById('logout-btn');
   if (userDisplay) userDisplay.innerText = `👤 ${currentUser.email}`;
   if (logoutBtn) logoutBtn.style.display = 'inline-block';
-  loadFromLocalStorage();
+  await loadUserData();
   setupValidation();
-  renderCategories();
   renderTasks();
   updatePlantUI();
   renderAnalytics();
-
-  const addCategoryBtn = document.getElementById('add-category-btn');
-  if (addCategoryBtn) {
-    addCategoryBtn.addEventListener('click', addNewCategoryPrompt);
-  }
-}
-
-function addNewCategoryPrompt() {
-  const newCat = prompt("Escribe el nombre de la nueva categoría:").trim().toLowerCase();
-  if (!newCat) return;
-  if (categories.includes(newCat)) {
-    alert("Esta categoría ya existe.");
-    return;
-  }
-  categories.push(newCat);
-  saveToLocalStorage();
-  renderCategories();
-  document.getElementById('task-category').value = newCat;
-  setupValidation();
-}
-
-function renderCategories() {
-  const selectElement = document.getElementById('task-category');
-  if (!selectElement) return;
-  selectElement.innerHTML = '<option value="" disabled selected>Selecciona categoría...</option>';
-  categories.forEach(cat => {
-    const option = document.createElement('option');
-    option.value = cat;
-    option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-    selectElement.appendChild(option);
-  });
 }
 
 function playChime() {
@@ -642,45 +609,38 @@ const DEFAULT_WEEKLY_HISTORY = { "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie":
 
 async function loadUserData() {
   if (!currentUser) return;
-  localStorage.setItem(`focusglow_${currentUser}_tasks`, JSON.stringify(tasks));
-  localStorage.setItem(`focusglow_${currentUser}_plantState`, JSON.stringify(plantState));
-  localStorage.setItem(`focusglow_${currentUser}_nutrients`, JSON.stringify(nutrients));
-  localStorage.setItem(`focusglow_${currentUser}_isWithered`, JSON.stringify(isWithered));
-  localStorage.setItem(`focusglow_${currentUser}_weekly`, JSON.stringify(weeklyHistory));
-}
 
-function loadFromLocalStorage() {
-  if (!currentUser) return;
-  try {
-    const localTasks = localStorage.getItem(`focusglow_${currentUser}_tasks`);
-    const localState = localStorage.getItem(`focusglow_${currentUser}_plantState`);
-    const localNutrients = localStorage.getItem(`focusglow_${currentUser}_nutrients`);
-    const localWithered = localStorage.getItem(`focusglow_${currentUser}_isWithered`);
-    const localWeekly = localStorage.getItem(`focusglow_${currentUser}_weekly`);
-    const localSound = localStorage.getItem(`focusglow_${currentUser}_sound`);
+  const { data: taskRows, error: taskError } = await supabaseClient
+    .from('tasks')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('id', { ascending: true });
 
-    if (localTasks) {
-      tasks = JSON.parse(localTasks);
-    } else {
-      tasks = [
-        { id: 1, title: 'Maquetar Interfaz CSS', category: 'diseno', estimated: 3, completedPomodoros: 1, status: 'pending' },
-        { id: 2, title: 'Programar Core de JavaScript', category: 'desarrollo', estimated: 4, completedPomodoros: 2, status: 'pending' }
-      ];
-    }
-    plantState = localState ? JSON.parse(localState) : 1;
-    nutrients = localNutrients ? JSON.parse(localNutrients) : 0;
-    isWithered = localWithered ? JSON.parse(localWithered) : false;
-    weeklyHistory = localWeekly ? JSON.parse(localWeekly) : { "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie": 0, "Sáb": 0, "Dom": 0 };
-    if (localSound) {
-      soundEnabled = JSON.parse(localSound);
-      const soundToggle = document.getElementById('sound-toggle');
-      if (soundToggle) soundToggle.checked = soundEnabled;
-    }
-  } catch (e) {
-    console.warn("Datos corruptos detectados para el usuario actual, inicializando con valores por defecto.");
-    tasks = [
-      { id: 1, title: 'Revisión de requerimientos', category: 'reunion', estimated: 2, completedPomodoros: 0, status: 'pending' }
-    ];
+  if (taskError) {
+    console.error("Error cargando tareas:", taskError);
+    tasks = [];
+  } else {
+    tasks = (taskRows || []).map(mapTaskRow);
+  }
+
+  const { data: gardenRow, error: gardenError } = await supabaseClient
+    .from('garden_state')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+
+  if (gardenError) {
+    console.error("Error cargando el jardín:", gardenError);
+  }
+
+  if (gardenRow) {
+    plantState = gardenRow.plant_state;
+    nutrients = gardenRow.nutrients;
+    isWithered = gardenRow.is_withered;
+    weeklyHistory = gardenRow.weekly_history || { ...DEFAULT_WEEKLY_HISTORY };
+    soundEnabled = gardenRow.sound_enabled;
+  } else {
+    // Primera vez que este usuario entra: crea su fila inicial
     plantState = 1;
     nutrients = 0;
     isWithered = false;
@@ -716,13 +676,15 @@ async function saveGardenState() {
 
 async function resetApp() {
   if (!currentUser) return;
-  if (confirm("¿Estás seguro de que deseas restablecer por completo tus datos? Perderás todo tu progreso personal.")) {
-    localStorage.removeItem(`focusglow_${currentUser}_tasks`);
-    localStorage.removeItem(`focusglow_${currentUser}_plantState`);
-    localStorage.removeItem(`focusglow_${currentUser}_nutrients`);
-    localStorage.removeItem(`focusglow_${currentUser}_isWithered`);
-    localStorage.removeItem(`focusglow_${currentUser}_weekly`);
-    localStorage.removeItem(`focusglow_${currentUser}_sound`);
-    location.reload();
+  if (!confirm("¿Estás seguro de que deseas restablecer por completo tus datos? Perderás todo tu progreso personal.")) {
+    return;
   }
+  const { error: taskError } = await supabaseClient.from('tasks').delete().eq('user_id', currentUser.id);
+  const { error: gardenError } = await supabaseClient.from('garden_state').delete().eq('user_id', currentUser.id);
+  if (taskError || gardenError) {
+    alert("Ocurrió un error al restablecer tus datos. Intenta de nuevo.");
+    console.error(taskError, gardenError);
+    return;
+  }
+  location.reload();
 }

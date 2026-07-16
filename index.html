@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusGlow - Digital Garden</title>
+    <title>FocusGlow - Jardín Digital</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -21,20 +21,20 @@
                 </div>
 
                 <div class="hero-content">
-                    <span class="hero-badge">PRODUCTIVITY V2.0</span>
-                    <h1 class="hero-title">Cultivate your<br>deep focus.</h1>
-                    <p class="hero-subtitle">Step into your digital garden. A workspace designed to silence the noise
-                        and amplify your creative flow through bio-inspired systems.</p>
+                    <span class="hero-badge">PRODUCTIVIDAD V2.0</span>
+                    <h1 class="hero-title">Cultiva tu<br>enfoque profundo.</h1>
+                    <p class="hero-subtitle">Entra a tu jardín digital. Un espacio de trabajo diseñado para silenciar
+                        el ruido y potenciar tu flujo creativo mediante sistemas bio-inspirados.</p>
                 </div>
 
                 <div class="hero-stats">
                     <div class="stat-item">
                         <span class="stat-num">94%</span>
-                        <span class="stat-label">FLOW RETENTION</span>
+                        <span class="stat-label">RETENCIÓN DE FLUJO</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-num">2.4h</span>
-                        <span class="stat-label">DAILY DEEP WORK</span>
+                        <span class="stat-label">TRABAJO PROFUNDO DIARIO</span>
                     </div>
                 </div>
             </div>
@@ -42,59 +42,52 @@
             <div class="auth-form-column">
                 <header class="auth-header-nav">
                     <nav class="auth-nav">
-                        <a href="#" class="nav-link">Products</a>
-                        <a href="#" class="nav-link">Methodology</a>
-                        <a href="#" class="nav-link">Pricing</a>
-                        <a href="#" class="nav-btn-alt">Try Free</a>
+                        <a href="#" class="nav-link">Productos</a>
+                        <a href="#" class="nav-link">Metodología</a>
+                        <a href="#" class="nav-link">Precios</a>
+                        <a href="#" class="nav-btn-alt">Prueba Gratis</a>
                     </nav>
                 </header>
 
                 <div class="auth-card-wrapper">
                     <div class="auth-card glass-panel">
-                        <h2 id="auth-title">Welcome Back</h2>
-                        <p class="auth-card-subtitle" id="auth-subtitle-text">Enter your credentials to enter flow
-                            state.</p>
+                        <h2 id="auth-title">Bienvenido de Nuevo</h2>
+                        <p class="auth-card-subtitle" id="auth-subtitle-text">Introduce tus credenciales para entrar
+                            en estado de flujo.</p>
 
                         <form id="auth-form">
                           
                             <div class="input-group">
-                                <label for="auth-username" id="auth-user-label">WORK EMAIL</label>
+                                <label for="auth-username" id="auth-user-label">CORREO ELECTRÓNICO</label>
                                 <div class="input-wrapper">
                                     <span class="input-icon">@</span>
-                                    <input type="text" id="auth-username" placeholder="name@flow.com" required
-                                        minlength="3" autocomplete="off">
+                                    <input type="email" id="auth-username" placeholder="nombre@correo.com" required
+                                        autocomplete="off">
                                 </div>
                             </div>
 
                         
                             <div class="input-group">
                                 <div class="label-row">
-                                    <label for="auth-password" id="auth-pass-label">SECRET KEY</label>
-                                    <a href="#" class="forgot-link">FORGOT?</a>
+                                    <label for="auth-password" id="auth-pass-label">CONTRASEÑA</label>
                                 </div>
                                 <div class="input-wrapper">
                                     <span class="input-icon">🔑</span>
                                     <input type="password" id="auth-password" placeholder="••••••••" required
-                                        minlength="4">
+                                        minlength="6">
                                 </div>
                             </div>
 
                            
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="keep-flow" checked>
-                                <label for="keep-flow">Keep me in flow on this device</label>
-                            </div>
-
-                           
                             <button type="submit" id="auth-submit-btn" class="solid-neon-btn">
-                                SIGN IN <span class="arrow">&gt;</span>
+                                INICIAR SESIÓN <span class="arrow">&gt;</span>
                             </button>
                         </form>
 
                         
                         <p class="auth-toggle-text">
-                            <span id="auth-toggle-text-span">New to the Garden?</span>
-                            <a href="#" id="toggle-auth-mode">Create Account</a>
+                            <span id="auth-toggle-text-span">¿Primera vez en el Jardín?</span>
+                            <a href="#" id="toggle-auth-mode">Crear Cuenta</a>
                         </p>
                     </div>
                 </div>
@@ -125,7 +118,7 @@
     
         <section class="task-section glass-panel">
             <h2>Tareas Diario</h2>
-            <form class="task-form" id="task-form" onsubmit="addTask(event)">
+            <form class="task-form" id="task-form">
                 <input type="text" id="task-title" placeholder="¿En qué vas a enfocarte hoy?" required minlength="3">
                 <select id="task-category" required>
                     <option value="" disabled selected>Selecciona categoría...</option>
@@ -133,7 +126,6 @@
                     <option value="diseno">Diseño</option>
                     <option value="reunion">Reunión</option>
                 </select>
-                <button type="button" id="add-category-btn" class="solid-neon-btn" style="padding: 0 12px; height: auto;">+</button>
                 <input type="number" id="task-estimated" placeholder="Pomodoros estimados (1-6)" min="1" max="6"
                     required>
                 <button type="submit" class="neon-btn" id="save-task-btn" style="width: 100%;">Agregar</button>
@@ -232,9 +224,9 @@
         <p>© 2026 FocusGlow — Diseñado por Daniel y Evelin</p>
     </footer>
 
-    <script src="js/app.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="js/supabase-config.js" defer></script>
+    <script src="js/app.js" defer></script>
 </body>
 
 </html>
