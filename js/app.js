@@ -1,4 +1,4 @@
-let currentUser = null;
+let currentUser = null; // objeto de usuario de Supabase Auth (currentUser.id, currentUser.email)
 let tasks = [];
 let activeTaskId = null;
 let timerInterval = null;
@@ -14,13 +14,23 @@ let weeklyHistory = {
 };
 let isRegisterMode = false;
 
-window.addEventListener('DOMContentLoaded', () => {
-  currentUser = localStorage.getItem('focusglow_logged_in_user');
-  if (currentUser) {
-    showApp();
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await showApp();
   } else {
     showAuth();
   }
+
+  // Mantiene la sesión sincronizada si expira o se cierra en otra pestaña
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    if (!session && currentUser) {
+      currentUser = null;
+      showAuth();
+    }
+  });
+
   const taskForm = document.getElementById('task-form');
   if (taskForm) {
     taskForm.addEventListener('submit', addTask);
@@ -69,25 +79,20 @@ function showAuth() {
                 <p id="auth-subtitle" class="auth-card-subtitle">Introduce tus credenciales para acceder a tu espacio de enfoque.</p>
                 <form id="auth-form">
                   <div class="input-group">
-                    <label for="auth-username">NOMBRE DE USUARIO</label>
+                    <label for="auth-username">CORREO ELECTRÓNICO</label>
                     <div class="input-wrapper">
-                      <span class="input-icon">👤</span>
-                      <input type="text" id="auth-username" required placeholder="ej. neonDeveloper">
+                      <span class="input-icon">@</span>
+                      <input type="email" id="auth-username" required placeholder="nombre@correo.com">
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="label-row">
                       <label for="auth-password">CONTRASEÑA</label>
-                      <a href="#" class="forgot-link">¿La olvidaste?</a>
                     </div>
                     <div class="input-wrapper">
                       <span class="input-icon">🔑</span>
-                      <input type="password" id="auth-password" required placeholder="••••••••">
+                      <input type="password" id="auth-password" required minlength="6" placeholder="Mínimo 6 caracteres">
                     </div>
-                  </div>
-                  <div class="checkbox-group">
-                    <input type="checkbox" id="remember-me" checked>
-                    <label for="remember-me">Recordar sesión en este navegador</label>
                   </div>
                   <button type="submit" id="auth-submit-btn" class="solid-neon-btn">
                     <span>Ingresar</span>
@@ -160,62 +165,71 @@ function setupAuthEvents() {
   }
 }
 
-function handleAuthSubmit(e) {
+async function handleAuthSubmit(e) {
   e.preventDefault();
-  const username = document.getElementById('auth-username').value.trim();
+  const email = document.getElementById('auth-username').value.trim();
   const password = document.getElementById('auth-password').value;
+  const submitBtn = document.getElementById('auth-submit-btn');
 
-  if (!username || !password) {
+  if (!email || !password) {
     alert("Por favor, completa todos los campos.");
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem('focusglow_users')) || {};
+  submitBtn.disabled = true;
 
   if (isRegisterMode) {
-    if (users[username]) {
-      alert("El nombre de usuario ya está tomado. Elige otro.");
+    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    if (error) {
+      alert("No se pudo crear la cuenta: " + error.message);
+      submitBtn.disabled = false;
       return;
     }
-    users[username] = { password: password };
-    localStorage.setItem('focusglow_users', JSON.stringify(users));
-    alert("¡Cuenta creada con éxito! Iniciando sesión automáticamente...");
-    loginUser(username);
-  } else {
-    if (users[username] && users[username].password === password) {
-      loginUser(username);
+    if (data.session) {
+      // Confirmación de correo desactivada: entra directo
+      await onAuthSuccess(data.user);
     } else {
-      alert("Usuario o contraseña incorrectos.");
+      alert("¡Cuenta creada! Revisa tu correo para confirmar la cuenta antes de iniciar sesión.");
+      submitBtn.disabled = false;
     }
+  } else {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      alert("Correo o contraseña incorrectos.");
+      submitBtn.disabled = false;
+      return;
+    }
+    await onAuthSuccess(data.user);
   }
 }
 
-function loginUser(username) {
-  currentUser = username;
-  localStorage.setItem('focusglow_logged_in_user', currentUser);
-  document.getElementById('auth-username').value = '';
-  document.getElementById('auth-password').value = '';
-  showApp();
+async function onAuthSuccess(user) {
+  currentUser = user;
+  const usernameInput = document.getElementById('auth-username');
+  const passwordInput = document.getElementById('auth-password');
+  if (usernameInput) usernameInput.value = '';
+  if (passwordInput) passwordInput.value = '';
+  await showApp();
 }
 
-function logout() {
+async function logout() {
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
   }
+  await supabaseClient.auth.signOut();
   currentUser = null;
-  localStorage.removeItem('focusglow_logged_in_user');
   showAuth();
 }
 
-function showApp() {
+async function showApp() {
   document.getElementById('auth-container').style.display = 'none';
   document.getElementById('main-grid').style.display = 'grid';
   const userDisplay = document.getElementById('user-display');
   const logoutBtn = document.getElementById('logout-btn');
-  if (userDisplay) userDisplay.innerText = `👤 ${currentUser}`;
+  if (userDisplay) userDisplay.innerText = `👤 ${currentUser.email}`;
   if (logoutBtn) logoutBtn.style.display = 'inline-block';
-  loadFromLocalStorage();
+  await loadUserData();
   setupValidation();
   renderTasks();
   updatePlantUI();
@@ -267,11 +281,9 @@ function playChime() {
   }
 }
 
-function toggleSound(e) {
+async function toggleSound(e) {
   soundEnabled = e.target.checked;
-  if (currentUser) {
-    localStorage.setItem(`focusglow_${currentUser}_sound`, JSON.stringify(soundEnabled));
-  }
+  await saveGardenState();
 }
 
 function setupValidation() {
@@ -296,26 +308,45 @@ function setupValidation() {
   validate();
 }
 
-function addTask(e) {
+async function addTask(e) {
   e.preventDefault();
   const title = document.getElementById('task-title').value;
   const category = document.getElementById('task-category').value;
   const estimated = parseInt(document.getElementById('task-estimated').value) || 1;
 
-  const newTask = {
-    id: Date.now(),
-    title,
-    category,
-    estimated,
-    completedPomodoros: 0,
-    status: 'pending'
-  };
+  const { data, error } = await supabaseClient
+    .from('tasks')
+    .insert({
+      user_id: currentUser.id,
+      title,
+      category,
+      estimated,
+      completed_pomodoros: 0,
+      status: 'pending'
+    })
+    .select()
+    .single();
 
-  tasks.push(newTask);
-  saveToLocalStorage();
+  if (error) {
+    alert("No se pudo guardar la tarea: " + error.message);
+    return;
+  }
+
+  tasks.push(mapTaskRow(data));
   renderTasks();
   document.getElementById('task-form').reset();
   setupValidation();
+}
+
+function mapTaskRow(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    category: row.category,
+    estimated: row.estimated,
+    completedPomodoros: row.completed_pomodoros,
+    status: row.status
+  };
 }
 
 function renderTasks() {
@@ -367,29 +398,33 @@ function selectTask(id) {
   }
 }
 
-function completeTask(id) {
+async function completeTask(id) {
   const task = tasks.find(t => t.id === id);
-  if (task) {
-    task.status = 'completed';
-    if (activeTaskId === id) {
-      activeTaskId = null;
-      document.getElementById('active-task-display').innerText = 'Selecciona una tarea para iniciar';
-      resetTimerUI();
-    }
-    saveToLocalStorage();
-    renderTasks();
+  if (!task) return;
+
+  task.status = 'completed';
+  if (activeTaskId === id) {
+    activeTaskId = null;
+    document.getElementById('active-task-display').innerText = 'Selecciona una tarea para iniciar';
+    resetTimerUI();
   }
+  renderTasks();
+
+  const { error } = await supabaseClient.from('tasks').update({ status: 'completed' }).eq('id', id);
+  if (error) alert("No se pudo actualizar la tarea en el servidor: " + error.message);
 }
 
-function deleteTask(id) {
+async function deleteTask(id) {
   tasks = tasks.filter(t => t.id !== id);
   if (activeTaskId === id) {
     activeTaskId = null;
     document.getElementById('active-task-display').innerText = 'Selecciona una tarea para iniciar';
     resetTimerUI();
   }
-  saveToLocalStorage();
   renderTasks();
+
+  const { error } = await supabaseClient.from('tasks').delete().eq('id', id);
+  if (error) alert("No se pudo eliminar la tarea en el servidor: " + error.message);
 }
 
 function toggleTimer() {
@@ -422,21 +457,22 @@ function pauseTimer() {
   document.title = `[PAUSADO] ${activeTask ? activeTask.title : 'FocusGlow'}`;
 }
 
-function abandonSession() {
+async function abandonSession() {
   const secondsPassed = totalDuration - timeRemaining;
   if (secondsPassed > 60) {
     isWithered = true;
-    saveToLocalStorage();
+    await saveGardenState();
     updatePlantUI();
   }
   resetTimerUI();
 }
 
-function completePomodoro() {
+async function completePomodoro() {
   playChime();
   const task = tasks.find(t => t.id === activeTaskId);
   if (task) {
     task.completedPomodoros = Math.min(task.estimated, task.completedPomodoros + 1);
+    await supabaseClient.from('tasks').update({ completed_pomodoros: task.completedPomodoros }).eq('id', task.id);
   }
   nutrients = Math.min(100, nutrients + 25);
   if (nutrients >= 100 && plantState < 4) {
@@ -445,7 +481,7 @@ function completePomodoro() {
   }
   isWithered = false;
   logProductivityMinutes(25);
-  saveToLocalStorage();
+  await saveGardenState();
   renderTasks();
   updatePlantUI();
   renderAnalytics();
@@ -533,12 +569,12 @@ function updatePlantUI() {
   }
 }
 
-function harvestPlant() {
+async function harvestPlant() {
   alert("¡Enhorabuena! Has cosechado una planta maravillosa gracias a tu enfoque.");
   plantState = 1;
   nutrients = 0;
   isWithered = false;
-  saveToLocalStorage();
+  await saveGardenState();
   updatePlantUI();
 }
 
@@ -565,63 +601,90 @@ function renderAnalytics() {
   });
 }
 
-function saveToLocalStorage() {
-  if (!currentUser) return;
-  localStorage.setItem(`focusglow_${currentUser}_tasks`, JSON.stringify(tasks));
-  localStorage.setItem(`focusglow_${currentUser}_plantState`, JSON.stringify(plantState));
-  localStorage.setItem(`focusglow_${currentUser}_nutrients`, JSON.stringify(nutrients));
-  localStorage.setItem(`focusglow_${currentUser}_isWithered`, JSON.stringify(isWithered));
-  localStorage.setItem(`focusglow_${currentUser}_weekly`, JSON.stringify(weeklyHistory));
-}
+// =========================
+// Persistencia con Supabase
+// =========================
 
-function loadFromLocalStorage() {
-  if (!currentUser) return;
-  try {
-    const localTasks = localStorage.getItem(`focusglow_${currentUser}_tasks`);
-    const localState = localStorage.getItem(`focusglow_${currentUser}_plantState`);
-    const localNutrients = localStorage.getItem(`focusglow_${currentUser}_nutrients`);
-    const localWithered = localStorage.getItem(`focusglow_${currentUser}_isWithered`);
-    const localWeekly = localStorage.getItem(`focusglow_${currentUser}_weekly`);
-    const localSound = localStorage.getItem(`focusglow_${currentUser}_sound`);
+const DEFAULT_WEEKLY_HISTORY = { "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie": 0, "Sáb": 0, "Dom": 0 };
 
-    if (localTasks) {
-      tasks = JSON.parse(localTasks);
-    } else {
-      tasks = [
-        { id: 1, title: 'Maquetar Interfaz CSS', category: 'diseno', estimated: 3, completedPomodoros: 1, status: 'pending' },
-        { id: 2, title: 'Programar Core de JavaScript', category: 'desarrollo', estimated: 4, completedPomodoros: 2, status: 'pending' }
-      ];
-    }
-    plantState = localState ? JSON.parse(localState) : 1;
-    nutrients = localNutrients ? JSON.parse(localNutrients) : 0;
-    isWithered = localWithered ? JSON.parse(localWithered) : false;
-    weeklyHistory = localWeekly ? JSON.parse(localWeekly) : { "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie": 0, "Sáb": 0, "Dom": 0 };
-    if (localSound) {
-      soundEnabled = JSON.parse(localSound);
-      const soundToggle = document.getElementById('sound-toggle');
-      if (soundToggle) soundToggle.checked = soundEnabled;
-    }
-  } catch (e) {
-    console.warn("Datos corruptos detectados para el usuario actual, inicializando con valores por defecto.");
-    tasks = [
-      { id: 1, title: 'Revisión de requerimientos', category: 'reunion', estimated: 2, completedPomodoros: 0, status: 'pending' }
-    ];
+async function loadUserData() {
+  if (!currentUser) return;
+
+  const { data: taskRows, error: taskError } = await supabaseClient
+    .from('tasks')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('id', { ascending: true });
+
+  if (taskError) {
+    console.error("Error cargando tareas:", taskError);
+    tasks = [];
+  } else {
+    tasks = (taskRows || []).map(mapTaskRow);
+  }
+
+  const { data: gardenRow, error: gardenError } = await supabaseClient
+    .from('garden_state')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+
+  if (gardenError) {
+    console.error("Error cargando el jardín:", gardenError);
+  }
+
+  if (gardenRow) {
+    plantState = gardenRow.plant_state;
+    nutrients = gardenRow.nutrients;
+    isWithered = gardenRow.is_withered;
+    weeklyHistory = gardenRow.weekly_history || { ...DEFAULT_WEEKLY_HISTORY };
+    soundEnabled = gardenRow.sound_enabled;
+  } else {
+    // Primera vez que este usuario entra: crea su fila inicial
     plantState = 1;
     nutrients = 0;
     isWithered = false;
-    weeklyHistory = { "Lun": 0, "Mar": 0, "Mié": 0, "Jue": 0, "Vie": 0, "Sáb": 0, "Dom": 0 };
+    weeklyHistory = { ...DEFAULT_WEEKLY_HISTORY };
+    soundEnabled = true;
+    await supabaseClient.from('garden_state').insert({
+      user_id: currentUser.id,
+      plant_state: plantState,
+      nutrients: nutrients,
+      is_withered: isWithered,
+      weekly_history: weeklyHistory,
+      sound_enabled: soundEnabled
+    });
   }
+
+  const soundToggle = document.getElementById('sound-toggle');
+  if (soundToggle) soundToggle.checked = soundEnabled;
 }
 
-function resetApp() {
+async function saveGardenState() {
   if (!currentUser) return;
-  if (confirm("¿Estás seguro de que deseas restablecer por completo tus datos? Perderás todo tu progreso personal.")) {
-    localStorage.removeItem(`focusglow_${currentUser}_tasks`);
-    localStorage.removeItem(`focusglow_${currentUser}_plantState`);
-    localStorage.removeItem(`focusglow_${currentUser}_nutrients`);
-    localStorage.removeItem(`focusglow_${currentUser}_isWithered`);
-    localStorage.removeItem(`focusglow_${currentUser}_weekly`);
-    localStorage.removeItem(`focusglow_${currentUser}_sound`);
-    location.reload();
+  const { error } = await supabaseClient.from('garden_state').upsert({
+    user_id: currentUser.id,
+    plant_state: plantState,
+    nutrients: nutrients,
+    is_withered: isWithered,
+    weekly_history: weeklyHistory,
+    sound_enabled: soundEnabled,
+    updated_at: new Date().toISOString()
+  });
+  if (error) console.error("Error guardando el jardín:", error);
+}
+
+async function resetApp() {
+  if (!currentUser) return;
+  if (!confirm("¿Estás seguro de que deseas restablecer por completo tus datos? Perderás todo tu progreso personal.")) {
+    return;
   }
+  const { error: taskError } = await supabaseClient.from('tasks').delete().eq('user_id', currentUser.id);
+  const { error: gardenError } = await supabaseClient.from('garden_state').delete().eq('user_id', currentUser.id);
+  if (taskError || gardenError) {
+    alert("Ocurrió un error al restablecer tus datos. Intenta de nuevo.");
+    console.error(taskError, gardenError);
+    return;
+  }
+  location.reload();
 }
