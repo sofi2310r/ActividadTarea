@@ -608,21 +608,28 @@ intactos */
 
 
 .focus-section {
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
+}
+
+.focus-section.glass-panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter: none !important;   
 }
 
 .active-task-display {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #fff;
-    text-shadow: 0 0 8px var(--neon-color);
-    min-height: 28px;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+    margin-bottom: 25px;
 }
 
 .timer-container {

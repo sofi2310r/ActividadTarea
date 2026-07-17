@@ -68,10 +68,6 @@ function showAuth() {
           </div>
           <div class="auth-form-column">
             <div class="auth-header-nav">
-              <div class="auth-nav">
-                <span class="nav-link">¿Primera vez?</span>
-                <a href="#" id="nav-toggle-btn" class="nav-btn-alt">Crear Cuenta</a>
-              </div>
             </div>
             <div class="auth-card-wrapper">
               <div class="auth-card">
