@@ -703,19 +703,14 @@ body.focus-mode-active footer {
     display: none !important;
 }
 
-body.focus-mode-active .focus-section {
-    max-width: 600px;
-    margin: auto;
-    padding: 60px;
-}
-
-body.focus-mode-active .timer-container {
-    width: 320px;
-    height: 320px;
-}
-
-body.focus-mode-active .timer-text {
-    font-size: 4rem;
+body.focus-mode-active .focus-section,
+body.focus-mode-active .focus-section.glass-panel,
+.focus-mode-active .timer-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 #exit-focus-btn {
