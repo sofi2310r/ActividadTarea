@@ -490,9 +490,15 @@ function resetTimerUI() {
   timerInterval = null;
   timeRemaining = totalDuration;
   isPaused = false;
-  document.getElementById('start-btn').style.display = 'inline-block';
-  document.getElementById('pause-btn').style.display = 'none';
-  document.getElementById('abandon-btn').style.display = 'none';
+  
+  const startBtn = document.getElementById('start-btn');
+  const pauseBtn = document.getElementById('pause-btn');
+  const abandonBtn = document.getElementById('abandon-btn');
+
+  if (startBtn) startBtn.style.display = 'inline-block';
+  if (pauseBtn) pauseBtn.style.display = 'none';
+  if (abandonBtn) abandonBtn.style.display = 'none';
+  
   updateTimerUI();
 }
 
@@ -546,15 +552,31 @@ function updatePlantUI() {
   const plantSvg = document.getElementById('plant-svg');
   const harvestBtn = document.getElementById('harvest-btn');
   if (!plantSvg) return;
+
   plantSvg.className.baseVal = "plant-svg";
+
   if (isWithered) {
     plantSvg.classList.add('withered');
   }
+
   plantSvg.classList.add(`state-${plantState}`);
+
+  // Controlar visualmente los grupos internos (<g>) del SVG de tu HTML
+  const seedGroup = plantSvg.querySelector('.seed');
+  const broteGroup = plantSvg.querySelector('.brote');
+  const jovenGroup = plantSvg.querySelector('.joven');
+  const florecidaGroup = plantSvg.querySelector('.florecida');
+
+  if (seedGroup) seedGroup.style.display = (plantState === 1) ? 'block' : 'none';
+  if (broteGroup) broteGroup.style.display = (plantState === 2) ? 'block' : 'none';
+  if (jovenGroup) jovenGroup.style.display = (plantState === 3) ? 'block' : 'none';
+  if (florecidaGroup) florecidaGroup.style.display = (plantState === 4) ? 'block' : 'none';
+
   const nutrientBar = document.getElementById('nutrient-bar');
   const nutrientPercent = document.getElementById('nutrient-percent');
   if (nutrientBar) nutrientBar.style.width = `${nutrients}%`;
   if (nutrientPercent) nutrientPercent.innerText = `${nutrients}%`;
+
   if (harvestBtn) {
     if (plantState === 4 && !isWithered) {
       harvestBtn.style.display = 'block';

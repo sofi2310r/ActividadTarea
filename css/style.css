@@ -1,9 +1,6 @@
-
 :root {
     --bg-color: #030811;
-    /* Ajustado al fondo ultra oscuro premium de la imagen */
     --panel-bg: rgba(13, 22, 37, 0.35);
-    /* Glassmorphism minimalista */
     --border-color: rgba(0, 242, 254, 0.2);
     --neon-color: #00f2fe;
     --neon-success: #39ff14;
@@ -60,7 +57,6 @@ header h1 {
     transition: var(--transition);
 }
 
-
 .neon-btn {
     background: rgba(0, 242, 254, 0.1);
     border: 1px solid var(--neon-color);
@@ -87,7 +83,6 @@ header h1 {
     transform: scale(0.95);
 }
 
-
 .app-grid {
     display: grid;
     grid-template-columns: 320px 1fr 300px;
@@ -99,7 +94,6 @@ header h1 {
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-
 .auth-wrapper {
     position: fixed;
     top: 0;
@@ -107,7 +101,6 @@ header h1 {
     width: 100vw;
     height: 100vh;
     background: #030811;
-    /* Fondo oscuro exacto */
     z-index: 2000;
     overflow-y: auto;
 }
@@ -117,7 +110,6 @@ header h1 {
     width: 100%;
     min-height: 100vh;
 }
-
 
 .auth-hero {
     width: 50%;
@@ -194,7 +186,6 @@ header h1 {
     letter-spacing: 1.5px;
     color: var(--text-muted);
 }
-
 
 .auth-form-column {
     width: 50%;
@@ -275,7 +266,6 @@ header h1 {
     margin-bottom: 30px;
 }
 
-
 .input-group {
     margin-bottom: 25px;
     display: flex;
@@ -335,7 +325,6 @@ header h1 {
     border-bottom-color: var(--neon-color);
 }
 
-
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -355,7 +344,6 @@ header h1 {
     color: var(--text-muted);
     cursor: pointer;
 }
-
 
 .solid-neon-btn {
     background: #5bf0ff;
@@ -446,27 +434,6 @@ header h1 {
     transition: var(--transition);
 }
 
-/* Color por defecto para cualquier categoría nueva que agregue el usuario */
-.badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  background-color: var(--primary-color, #4a5568); /* Color neutro de respaldo */
-  color: #ffffff;
-}
-
-intactos */
-.badge-desarrollo { background-color: #007acc; }
-.badge-diseno { background-color: #e28743; }
-.badge-reunion { background-color: #8b5cf6; }
-
-#task-category option {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-}
-
 .task-form input:focus,
 .task-form select:focus {
     border-color: var(--neon-color);
@@ -516,11 +483,9 @@ intactos */
     from {
         transform: translateX(0);
     }
-
     50% {
         transform: translateX(5px);
     }
-
     to {
         transform: translateX(0);
     }
@@ -537,13 +502,14 @@ intactos */
     font-size: 0.95rem;
 }
 
-
 .badge {
-    font-size: 0.75rem;
-    padding: 2px 8px;
+    padding: 4px 8px;
     border-radius: 12px;
+    font-size: 0.75rem;
     font-weight: bold;
     text-transform: uppercase;
+    background-color: var(--primary-color, #4a5568);
+    color: #ffffff;
 }
 
 .badge-desarrollo {
@@ -606,7 +572,6 @@ intactos */
     color: #fff;
 }
 
-
 .focus-section {
     padding: 0;
     display: flex;
@@ -615,11 +580,13 @@ intactos */
     justify-content: center;
 }
 
-.focus-section.glass-panel {
+.focus-section.glass-panel,
+body.focus-mode-active .focus-section,
+body.focus-mode-active .focus-section.glass-panel {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    backdrop-filter:none !important;
+    backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;   
 }
 
@@ -632,13 +599,16 @@ intactos */
     margin-bottom: 25px;
 }
 
-.timer-container {
+.timer-container,
+.focus-mode-active .timer-container {
     position: relative;
     width: 240px;
     height: 240px;
     margin-bottom: 30px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
-
 
 .timer-svg {
     transform: rotate(-90deg);
@@ -703,16 +673,6 @@ body.focus-mode-active footer {
     display: none !important;
 }
 
-body.focus-mode-active .focus-section,
-body.focus-mode-active .focus-section.glass-panel,
-.focus-mode-active .timer-container {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-}
-
 #exit-focus-btn {
     display: none;
     margin-top: 20px;
@@ -721,7 +681,6 @@ body.focus-mode-active .focus-section.glass-panel,
 body.focus-mode-active #exit-focus-btn {
     display: inline-block;
 }
-
 
 .warning-toast {
     position: fixed;
@@ -739,7 +698,6 @@ body.focus-mode-active #exit-focus-btn {
     transition: opacity 0.3s ease;
     pointer-events: none;
 }
-
 
 .garden-section {
     display: flex;
@@ -765,44 +723,19 @@ body.focus-mode-active #exit-focus-btn {
     transition: var(--transition);
 }
 
-
-.plant-svg .state {
-    display: none;
+.plant-svg.withered g,
+.plant-svg.withered circle,
+.plant-svg.withered path,
+.plant-svg.withered rect {
+    fill: #4a5568 !important;
+    stroke: #2d3748 !important;
+    filter: drop-shadow(0 0 0px transparent) !important;
 }
-
-.plant-svg.state-1 .seed {
-    display: block;
-    fill: #8b5a2b;
-}
-
-.plant-svg.state-2 .brote {
-    display: block;
-    fill: #4caf50;
-}
-
-.plant-svg.state-3 .joven {
-    display: block;
-    fill: #2e7d32;
-}
-
-.plant-svg.state-4 .florecida {
-    display: block;
-    fill: #e91e63;
-}
-
-
-.plant-svg.withered {
-    filter: grayscale(0.8) sepia(0.2);
-}
-
 
 @keyframes neon-flash {
-
-    0%,
-    100% {
+    0%, 100% {
         filter: drop-shadow(0 0 5px #ff0055);
     }
-
     50% {
         filter: drop-shadow(0 0 20px #00f2fe) drop-shadow(0 0 30px #e91e63);
     }
@@ -836,7 +769,6 @@ body.focus-mode-active #exit-focus-btn {
     margin-top: 10px;
     font-size: 0.85rem;
 }
-
 
 .analytics-section {
     grid-column: 1 / -1;
@@ -876,7 +808,6 @@ body.focus-mode-active #exit-focus-btn {
     color: var(--text-muted);
 }
 
-/* FOOTER */
 footer {
     text-align: center;
     padding: 20px;
