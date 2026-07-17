@@ -68,6 +68,7 @@ function showAuth() {
           </div>
           <div class="auth-form-column">
             <div class="auth-header-nav">
+
             </div>
             <div class="auth-card-wrapper">
               <div class="auth-card">
