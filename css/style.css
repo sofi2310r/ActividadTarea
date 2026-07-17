@@ -633,10 +633,9 @@ intactos */
 }
 
 .timer-container {
-    position: relative;
-    width: 240px;
-    height: 240px;
-    margin-bottom: 30px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 
